@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>d3 Array of Tables Demo</title>
   <!-- Author: Bo Ericsson, bo@boe.net -->
-  <link rel=stylesheet type=text/css href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" media="all">
+  <link rel=stylesheet type=text/css href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" media="all">
   <style>
     body {
       padding: 10px;
@@ -15,8 +15,9 @@
       padding-bottom: 0px;
       width: 500px;
     }
-    table1 {
-      max-width: 500px;
+    table {
+      font-size: 10px;
+      line-height: 10px;
     }
     td, th {
       width: 33.3%;
@@ -43,7 +44,7 @@ var currTask = 0;
 var taskButton = header.append("button")
     .attr("class", "btn btn-primary")
     .style("margin-bottom", "20px")
-    .style("width", "inherit")
+    .style("width", "100%")
     .style("text-align", "left")
     .text("Start")
     .on("click", function() {
@@ -55,7 +56,7 @@ var taskButton = header.append("button")
     })
 
 // container for array of tables
-var tableDiv = d3.select("body").append("div").attr("id", "tableDiv");
+var tableDiv = d3.select("body").append("div").attr("id", "tableDiv1");
 
 // initial data
 var data;
@@ -82,7 +83,6 @@ var initialData = [
     ]
   }
 ]
-
 
 // tasks
 function task0() {
@@ -155,14 +155,18 @@ function task6() {
 var tasks = [task0, task1, task2, task3, task4, task5, task6];
 
 
-
 // function in charge of the array of tables (is called from the tasks defined above)
 function update(data) {
 
   // get all divs in the table div 
   var divs = tableDiv.selectAll("div")
       // after .data() is executed below, divs becomes a d3 update selection
-      .data(data, function(d) { return d.table }) // key function to disable default by-index evaluation
+      //.data(data, function(d) { return d.table }) // key function to disable default by-index evaluation
+      .data(function(d) {
+        return data;
+      }, function(d) { 
+      return d.table 
+      }) // key function to disable default by-index evaluation
 
   // for any deleted table, remove its div and contents (by using the exit function of the update selection)
   divs.exit().remove();
@@ -192,7 +196,7 @@ function update(data) {
   tableEnter.append("tbody");
 
   // select all tr elements in the divs update selection
-  var tr = divs.selectAll("table").selectAll("tbody").selectAll("tr")
+  var tr = divs.select("table").select("tbody").selectAll("tr")
       .data(function(d, i) { return d.rows; }, function(d) { return d.row }); // again we're using key function to disable by-index evaluation
 
   // remove rows for missing data items
@@ -210,7 +214,7 @@ function update(data) {
 
   // update contents of table cells
   td.text(function(d) { return d; })
-
 }
+
 
 </script>
